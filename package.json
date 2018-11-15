@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "watch": "node_modules/.bin/nodemon index.js"
   },
   "repository": {
