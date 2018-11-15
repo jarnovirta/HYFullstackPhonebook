@@ -1,0 +1,28 @@
+{
+  "name": "phonebook",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "watch": "node_modules/.bin/nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jarnovirta/HYFullstackPhonebook.git"
+  },
+  "author": "Jarno Virta",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jarnovirta/HYFullstackPhonebook/issues"
+  },
+  "homepage": "https://github.com/jarnovirta/HYFullstackPhonebook#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.5",
+    "express": "^4.16.4",
+    "mongoose": "^5.3.12"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.6"
+  }
+}
