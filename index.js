@@ -17,21 +17,17 @@ app.get('/api/persons', (req, res) => {
     .then(persons => { 
       res.json(persons.map(Person.format)) 
     })
-    .catch(error => {
-      console.log(error)
-      res.status(500).end()
-    })  
 })
 
 app.get('/api/persons/:id', (req, res) => {
   Person.findById(req.params.id)
     .then(person => {
-      if (person) res.json(Person.format(person))
-      else res.status(404).send({ error: 'Record does not exist' })
+      if (person === null) res.status(404).send({ error: 'Person not found' })
+      else res.json(Person.format(person))
     })
     .catch(error => {
       console.log(error)
-      res.status(404).send({ error: 'Person not found' })
+      res.status(400).send({ error: 'malformatted id' })
     })
 })
 
@@ -39,31 +35,23 @@ app.post('/api/persons', (req, res) => {
   if (Object.keys(req.body).length === 0) {
     return res.status(400).send({ error: 'Empty request body'})
   }
-  const person = req.body
+  const requestPerson = req.body
 
-  if (person.name === undefined || person.number === undefined) {
+  if (requestPerson.name === undefined || requestPerson.number === undefined) {
     return res.status(400).send({ error: 'Name or number missing'})
   }
-
-  Person.findOne({ name: person.name })
-    .then(existingPerson => {
-      if (existingPerson !== null) {
-        res.status(400).send({ error: 'Person is already in database'})
-      }
-      else {
-        const newPerson = new Person({
-          name: person.name,
-          number: person.number
-        })
-        newPerson.save()
-            .then(savedPerson => res.json(Person.format(savedPerson)))  
-      }
-    })
-    .catch(error => {
-      console.log(error)
-      res.status(500).end()
-    })
-    
+  const newPerson = new Person({
+    name: requestPerson.name,
+    number: requestPerson.number
+  })
+  newPerson.save()
+      .then(savedPerson => res.json(Person.format(savedPerson)))  
+      .catch(error => {
+        if (error.name === 'MongoError' && error.code === 11000) {
+          res.status(400).send({ error: 'Person is already in database' })
+        }
+        else res.sendStatus(500)        
+  })  
 })
 
 app.delete('/api/persons/:id', (req, res) => {
@@ -71,7 +59,7 @@ app.delete('/api/persons/:id', (req, res) => {
     .then(res.status(204).end())
     .catch(error => {
       console.log(error)
-      res.status(500).end()
+      res.status(400).send({ error: 'malformatted id' })
     })
 })
 app.put('/api/persons/:id', (req, res) => {
@@ -82,7 +70,7 @@ app.put('/api/persons/:id', (req, res) => {
   Person.findByIdAndUpdate(req.params.id, req.body, { new: true })
     .then(updatedPerson => res.json(Person.format(updatedPerson)))
     .catch(() => {
-      res.status(404).send({ error: 'Record not found' })
+      res.status(400).send({ error: 'malformatted id' })
     })
 })
 app.get('/info', (req, res) => {

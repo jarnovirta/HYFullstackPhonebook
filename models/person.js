@@ -1,14 +1,14 @@
 const mongoose = require('mongoose')
+mongoose.set('useCreateIndex', true)
 
 if ( process.env.NODE_ENV !== 'production') {
     require('dotenv').config()
 }
-console.log(`MONGODB URI SET TO ${process.env.MONGODB_URI}`)
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true })
 
 var PersonSchema = new mongoose.Schema({
-    name: String,
-    number: String 
+    name: { type: String, required: true, unique: true },
+    number: { type: String, required: true } 
 })
 PersonSchema.statics.format = function(person) {
     return { 
