@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 if ( process.env.NODE_ENV !== 'production') {
     require('dotenv').config()
 }
-
+console.log(`MONGODB URI SET TO ${process.env.MONGODB_URI}`)
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true })
 
 var PersonSchema = new mongoose.Schema({
@@ -20,7 +20,11 @@ PersonSchema.statics.format = function(person) {
 const Person = mongoose.model('Person', PersonSchema)
 
 const findAll = Person.find({})
-    .then(personList => personList.map(Person.format))
+    .then(personList => {
+        console.log("\n*** DEBUG: personList: ", personList)
+        return personList.map(Person.format)
+
+    })
 
 const findById = (id) => Person.findById(id)
     .then(person => Person.format(person))
