@@ -19,35 +19,4 @@ PersonSchema.statics.format = function(person) {
 }
 const Person = mongoose.model('Person', PersonSchema)
 
-const findAll = Person.find({})
-    .then(personList => {
-        console.log("\n*** DEBUG: personList: ", personList)
-        return personList.map(Person.format)
-
-    })
-
-const findById = (id) => Person.findById(id)
-    .then(person => Person.format(person))
-
-const exists = (person) => Person.findOne({ name: person.name })
-    .then(existingPerson => { return existingPerson !== null })
-
-const create = (person) => {
-    const newPerson = new Person({
-        name: person.name,
-        number: person.number
-    })
-    return newPerson.save()
-        .then(savedPerson => Person.format(savedPerson))  
-}
-
-const findByIdAndDelete = (id) => {
-    return Person.findByIdAndDelete(id)    
-}
-
-const findByIdAndUpdate = (id, updatedPerson) => {
-    return Person.findByIdAndUpdate(id, updatedPerson, { new: true })
-        .then(savedPerson => Person.format(savedPerson))
-}
-
-module.exports = { create, findAll, findById, exists, findByIdAndDelete, findByIdAndUpdate }
+module.exports = Person
