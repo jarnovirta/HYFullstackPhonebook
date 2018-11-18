@@ -57,7 +57,6 @@ app.post('/api/persons', (req, res) => {
         })
         newPerson.save()
             .then(savedPerson => res.json(Person.format(savedPerson)))  
-
       }
     })
     .catch(error => {
@@ -87,7 +86,7 @@ app.put('/api/persons/:id', (req, res) => {
     })
 })
 app.get('/info', (req, res) => {
-  person.findAll.then(personList => {
+  Person.find({}).then(personList => {
     res.set({
       'Content-Type': 'text/plain;characterEncoding=UTF-8'
     })
@@ -95,7 +94,12 @@ app.get('/info', (req, res) => {
       + '\n\n' + new Date())
   })
 })
-  
+const error = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
+}
+
+app.use(error)
+
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)

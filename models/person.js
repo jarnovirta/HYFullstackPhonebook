@@ -8,7 +8,7 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true })
 
 var PersonSchema = new mongoose.Schema({
     name: String,
-    number: Number 
+    number: String 
 })
 PersonSchema.statics.format = function(person) {
     return { 
