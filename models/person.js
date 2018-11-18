@@ -19,7 +19,6 @@ PersonSchema.statics.format = function(person) {
 }
 const Person = mongoose.model('Person', PersonSchema)
 
-
 const findAll = Person.find({})
     .then(personList => personList.map(Person.format))
 
