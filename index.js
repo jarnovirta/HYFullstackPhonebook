@@ -10,12 +10,12 @@ app.use(cors())
 app.use(bodyParser.json())
 app.use(morgan(':method :url :reqBody :status :res[content-length] - :response-time ms'))
 
-morgan.token('reqBody', (req, res) => JSON.stringify(req.body))
+morgan.token('reqBody', (req) => JSON.stringify(req.body))
 
 app.get('/api/persons', (req, res) => {
   Person.find({})
-    .then(persons => { 
-      res.json(persons.map(Person.format)) 
+    .then(persons => {
+      res.json(persons.map(Person.format))
     })
 })
 
@@ -26,32 +26,32 @@ app.get('/api/persons/:id', (req, res) => {
       else res.json(Person.format(person))
     })
     .catch(error => {
-      console.log(error)
+      console.error(error)
       res.status(400).send({ error: 'malformatted id' })
     })
 })
 
 app.post('/api/persons', (req, res) => {
   if (Object.keys(req.body).length === 0) {
-    return res.status(400).send({ error: 'Empty request body'})
+    return res.status(400).send({ error: 'Empty request body' })
   }
   const requestPerson = req.body
 
   if (requestPerson.name === undefined || requestPerson.number === undefined) {
-    return res.status(400).send({ error: 'Name or number missing'})
+    return res.status(400).send({ error: 'Name or number missing' })
   }
   const newPerson = new Person({
     name: requestPerson.name,
     number: requestPerson.number
   })
   newPerson.save()
-      .then(savedPerson => res.json(Person.format(savedPerson)))  
-      .catch(error => {
-        if (error.name === 'MongoError' && error.code === 11000) {
-          res.status(400).send({ error: 'Person is already in database' })
-        }
-        else res.sendStatus(500)        
-  })  
+    .then(savedPerson => res.json(Person.format(savedPerson)))
+    .catch(error => {
+      if (error.name === 'MongoError' && error.code === 11000) {
+        res.status(400).send({ error: 'Person is already in database' })
+      }
+      else res.sendStatus(500)
+    })
 })
 
 app.delete('/api/persons/:id', (req, res) => {
@@ -64,7 +64,7 @@ app.delete('/api/persons/:id', (req, res) => {
 })
 app.put('/api/persons/:id', (req, res) => {
   if (Object.keys(req.body).length === 0) {
-    return res.status(400).send({ error: 'Empty request body'})
+    return res.status(400).send({ error: 'Empty request body' })
   }
 
   Person.findByIdAndUpdate(req.params.id, req.body, { new: true })

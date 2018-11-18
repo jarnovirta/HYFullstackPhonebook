@@ -1,8 +1,8 @@
 const mongoose = require('mongoose')
 const mongoCreds = require('./mongoCredentials')
 
-const url = 'mongodb://' + mongoCreds.username + ':' 
-    + mongoCreds.password 
+const url = 'mongodb://' + mongoCreds.username + ':'
+    + mongoCreds.password
     + '@ds055980.mlab.com:55980/hy_fullstack_phonebook'
 
 mongoose.connect(url, { useNewUrlParser: true })
@@ -18,14 +18,14 @@ const Person = mongoose.model('Person', {
     number: String
 })
 
-if ( argCount == 2) {
+if (argCount === 2) {
     Person.find({})
     .then(result => {
-        console.log("puhelinluettelo:")
+        console.log('puhelinluettelo:')
         result.forEach(person => console.log(`${person.name} ${person.number}`))
         mongoose.connection.close()
         process.exit()
-    }) 
+    })
 }
 
 const person = new Person({
@@ -35,4 +35,3 @@ const person = new Person({
 
 person.save()
     .then(() => mongoose.connection.close())
-    
