@@ -1,11 +1,10 @@
 const mongoose = require('mongoose')
-const mongoCreds = require('./../mongoCredentials')
 
-const url = 'mongodb://' + mongoCreds.username + ':' 
-    + mongoCreds.password 
-    + '@ds055980.mlab.com:55980/hy_fullstack_phonebook'
+if ( process.env.NODE_ENV !== 'production') {
+    require('dotenv').config()
+}
 
-mongoose.connect(url, { useNewUrlParser: true })
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true })
 
 var PersonSchema = new mongoose.Schema({
     name: String,
